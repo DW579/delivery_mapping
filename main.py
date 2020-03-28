@@ -1,15 +1,10 @@
-import csv
-from HashTable import HashTable
+# import csv
+from PackageHashTable import PackageHashTable
 
-# Initiate hash table for package data
-package_hash = HashTable()
+# Create hash table for packages
+package_table = PackageHashTable()
 
-package_hash.call()
+package_table.load_table()
+package_table.print_all()
 
-# Importing package data from packages_data.csv
-with open('data/packages_data.csv') as csv_file:
-    csv_reader = csv.reader(csv_file)
-
-    for row in csv_reader:
-        print(row)
 
