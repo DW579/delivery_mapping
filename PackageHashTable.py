@@ -28,9 +28,8 @@ class PackageHashTable:
                     obj['state'] = row[3]
                     obj['zip'] = row[4]
                     obj['delivery_deadline'] = row[5]
-                    obj['mass'] = row[6]
-                    obj['delivered'] = False
-                    obj['delivered_time'] = None
+                    obj['weight'] = row[6]
+                    obj['delivery_status'] = {'delivered': False, 'delivered_time': None}
 
                     # Set filled object into the i-th place
                     self.table[i] = obj
