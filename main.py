@@ -9,6 +9,7 @@ distance_graph = DistanceGraph()
 package_table.load_table()
 package_table.print_all()
 
+distance_graph.load_graph()
 distance_graph.print_graph()
 
 
