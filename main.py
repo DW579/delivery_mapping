@@ -6,10 +6,12 @@ from DistanceGraph import DistanceGraph
 package_table = PackageHashTable()
 distance_graph = DistanceGraph()
 
-package_table.load_table()
-package_table.print_all()
+loaded_package_table = package_table.load_table()
+# package_table.print_all()
 
 distance_graph.load_graph()
-distance_graph.print_graph()
+distance_graph.test_multi_truck(loaded_package_table)
+# distance_graph.test_truck()
+# distance_graph.print_graph()
 
 

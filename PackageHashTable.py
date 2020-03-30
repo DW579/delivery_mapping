@@ -36,6 +36,8 @@ class PackageHashTable:
 
                     i += 1
 
+        return self.table
+
     # Print all the loaded packages in the hash table
     def print_all(self):
         print(self.table)

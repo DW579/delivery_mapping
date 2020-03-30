@@ -35,4 +35,73 @@ class DistanceGraph:
                             self.graph[i][j] = str(num)
 
     def print_graph(self):
-        print(self.graph)
+        for row in self.graph:
+            print(row)
+
+    def test_multi_truck(self, package_table):
+        print(package_table)
+
+    def test_truck(self):
+        distance_graph = self.graph
+        locations = self.location_hash
+        pri_mileage = 0
+        # sec_mileage = 0
+        pri_packages = ['195 W Oakland Ave', '3060 Lester St', '2010 W 500 S', '4300 S 1300 E', '4580 S 2300 E', '4580 S 2300 E', '3595 Main St', '5383 S 900 East #104', '1330 2100 S', '300 State St', '3365 S 900 W', '4580 S 2300 E', '410 S State St', '380 W 2880 S']
+        # sec_packages = ['2530 S 500 E', '233 Canyon Rd', '380 W 2880 S', '410 S State St', '1330 2100 S', '300 State St', '300 State St', '600 E 900 South', '2600 Taylorsville Blvd', '3575 W Valley Central Station bus Loop']
+        current_location = '4001 South 700 East'
+        current_hour = 8
+        current_min = 0
+        current_sec = 0
+
+        # While pri_packages is not empty, continue looping
+        while len(pri_packages) > 0:
+            # Set lowest_address = None
+            lowest_address = None
+            # Set lowest_mileage = -1
+            lowest_mileage = -1
+
+            # Loop through the remining addresses in pri_packages and find the location that is shortest to the current_location
+            for i in range(0, len(pri_packages)):
+                # If lowest_address is None, then set lowest_address to the selected address in pri_packages
+                if lowest_address is None:
+                    lowest_address = pri_packages[i]
+                    lowest_mileage = float(distance_graph[locations[current_location]][locations[pri_packages[i]]])
+                #Else if selected pri_packages address has a shorted travel time then what is saved in lowest_mileage, set lowest_address and lowest_mileage to the selected address in pri_packages
+                elif float(distance_graph[locations[current_location]][locations[pri_packages[i]]]) < lowest_mileage:
+                    lowest_address = pri_packages[i]
+                    lowest_mileage = float(distance_graph[locations[current_location]][locations[pri_packages[i]]])
+
+            # Add lowest_mileage to pri_mileage
+            pri_mileage += lowest_mileage
+            # Calculate the time to be added to current_hour, current_min, and current_sec
+            print(lowest_address)
+            print(lowest_mileage)
+            while lowest_mileage >= 18:
+                current_hour += 1
+                lowest_mileage -= 18
+                print(lowest_mileage)
+            while lowest_mileage >= .3:
+                current_min += 1
+                lowest_mileage -= float(.3)
+                lowest_mileage = round(lowest_mileage, 3)
+                print(lowest_mileage)
+
+                if current_min > 59:
+                    current_min = 0
+                    current_hour += 1
+            while lowest_mileage >= .005:
+                current_sec += 1
+                lowest_mileage -= float(.005)
+                lowest_mileage = round(lowest_mileage, 3)
+                print(lowest_mileage)
+
+                if current_sec > 59:
+                    current_sec = 0
+                    current_min += 1
+            # Update current_location with lowest_address
+            current_location = lowest_address
+            # Remove address in lowest_address from pri_packages
+            print("Delivered at: ", current_hour, ":", current_min, ":", current_sec)
+            pri_packages.remove(lowest_address)
+
+        print(pri_mileage)
