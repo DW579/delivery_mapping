@@ -40,35 +40,13 @@ class DistanceGraph:
         for row in self.graph:
             print(row)
 
-    def test_multi_truck(self, package_table):
-        package_address_arr = []
-        truck_one = []
-        truck_two = []
-        truck_three = []
-
-        # Loop and load all packages into one array
-        for package in package_table:
-            package_address_arr.append(package['address'])
-
-        # Loop and load two trucks with 16 packages each. Truck 1 will have the shortest path and truck 2 will have the longer route
-        for address in package_address_arr:
-            if len(truck_one) < 16:
-                truck_one.append(address)
-            elif len(truck_two) < 16:
-                truck_two.append(address)
-            else:
-                truck_three.append(address)
-
-        # Use the algorithm I created below for test_truck on the two trucks. Return the two arrays.
-        return truck_one, truck_two, truck_three
-
-    def test_truck(self, truck_1_packages, truck_2_packages, truck_3_packages):
+    def test_truck(self):
         distance_graph = self.graph
         locations = self.location_hash
         pri_mileage = 0
         # sec_mileage = 0
         pri_packages = ['195 W Oakland Ave', '2010 W 500 S', '4300 S 1300 E', '4580 S 2300 E', '4580 S 2300 E', '177 W Price Ave', '3595 Main St', '3595 Main St', '1330 2100 S', '300 State St', '4580 S 2300 E', '380 W 2880 S']
-        sec_packages = truck_2_packages
+        sec_packages = []
         current_location = '4001 South 700 East'
         current_hour = 8
         current_min = 0
