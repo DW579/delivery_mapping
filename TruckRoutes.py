@@ -303,7 +303,7 @@ class TruckRoutes:
         self.distance_graph = loaded_distance_graph
         self.location_hash = loaded_location_hash
 
-    def route_trucks(self, user_time):
+    def route_trucks(self, user_hour, user_minute):
         # Reassign distance graph and locations hash to new variables, so that we don't change the initial ones
         distance_graph = self.distance_graph
         locations = self.location_hash
@@ -312,10 +312,6 @@ class TruckRoutes:
         # Create two empty trucks
         first_truck = Truck()
         second_truck = Truck()
-
-        # Set user time: hour, min, sec
-        user_hour = 15
-        user_min = 50
 
         # Load first truck priority and standard arrays with manual loading
         first_truck.add_all_priority(['1', '13', '14', '15', '16', '20', '21', '29', '30', '34', '40'])
