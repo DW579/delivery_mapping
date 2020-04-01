@@ -26,11 +26,9 @@ class Truck:
 
     def add_all_priority(self, packages):
         self.packages_priority = packages
-        # self.total_packages += len(packages)
 
     def add_all_standard(self, packages):
         self.packages_standard = packages
-        # self.total_packages += len(packages)
 
     def add_standard(self, package):
         self.packages_standard.append(package)
@@ -211,16 +209,6 @@ class TruckRoutes:
                         lowest_address = first_standard_packages[i]
                         # location[] needs the string address in the brackets
                         lowest_mileage = float(distance_graph[locations[first_truck.get_location()]][locations[self.package_table[int(first_standard_packages[i]) - 1]['address']]])
-
-                # for i in range(0, len(all_other_packages)):
-                #     if lowest_address is None:
-                #         lowest_address = all_other_packages[i]
-                #         # location[] needs the string address in the brackets
-                #         lowest_mileage = float(distance_graph[locations[first_truck.get_location()]][locations[self.package_table[int(all_other_packages[i]) - 1]['address']]])
-                #     elif float(distance_graph[locations[first_truck.get_location()]][locations[self.package_table[int(all_other_packages[i]) - 1]['address']]]) < lowest_mileage:
-                #         lowest_address = all_other_packages[i]
-                #         # location[] needs the string address in the brackets
-                #         lowest_mileage = float(distance_graph[locations[first_truck.get_location()]][locations[self.package_table[int(all_other_packages[i]) - 1]['address']]])
             else:
                 for i in range(0, len(all_other_packages)):
                     if lowest_address is None:
@@ -353,16 +341,6 @@ class TruckRoutes:
                         lowest_address = second_standard_packages[i]
                         # location[] needs the string address in the brackets
                         lowest_mileage = float(distance_graph[locations[second_truck.get_location()]][locations[self.package_table[int(second_standard_packages[i]) - 1]['address']]])
-
-                # for i in range(0, len(all_other_packages)):
-                #     if lowest_address is None:
-                #         lowest_address = all_other_packages[i]
-                #         # location[] needs the string address in the brackets
-                #         lowest_mileage = float(distance_graph[locations[second_truck.get_location()]][locations[self.package_table[int(all_other_packages[i]) - 1]['address']]])
-                #     elif float(distance_graph[locations[second_truck.get_location()]][locations[self.package_table[int(all_other_packages[i]) - 1]['address']]]) < lowest_mileage:
-                #         lowest_address = all_other_packages[i]
-                #         # location[] needs the string address in the brackets
-                #         lowest_mileage = float(distance_graph[locations[second_truck.get_location()]][locations[self.package_table[int(all_other_packages[i]) - 1]['address']]])
             else:
                 for i in range(0, len(all_other_packages)):
                     if lowest_address is None:
@@ -493,20 +471,21 @@ class TruckRoutes:
             # Update current_location with lowest_address on first_truck
             first_truck.update_location(self.package_table[int(lowest_address) - 1]['address'])
 
-            print("Package ID: ", lowest_address)
+            # print("Package ID: ", lowest_address)
 
             # Update delivery_status of the package that is delivered
             self.package_table[int(lowest_address) - 1]['delivery_status']['delivered'] = True
             self.package_table[int(lowest_address) - 1]['delivery_status']['delivered_time'] = time(first_truck.get_hour(), first_truck.get_minutes(), first_truck.get_seconds()).strftime("%I:%M:%S %p")
 
-            print(self.package_table[int(lowest_address) - 1])
+            # print(self.package_table[int(lowest_address) - 1])
 
             all_other_packages.remove(lowest_address)
             first_truck.add_total_package_count(1)
 
         print(first_truck.get_mileage())
+        print(time(first_truck.get_hour(), first_truck.get_minutes(), first_truck.get_seconds()).strftime("%I:%M:%S %p"))
         print(second_truck.get_mileage())
-
+        print(time(second_truck.get_hour(), second_truck.get_minutes(), second_truck.get_seconds()).strftime("%I:%M:%S %p"))
 
     def print(self):
         print(self.package_table)
