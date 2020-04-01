@@ -82,6 +82,63 @@ class Truck:
     def add_mileage(self, mileage):
         self.mileage = round(self.mileage + mileage, 3)
 
+    def deliver_priority(self, distance_graph, locations, package_table):
+        while len(self.packages_priority) > 0:
+            # lowest_address is a string number of the package id
+            lowest_address = None
+            lowest_mileage = -1
+
+            # Loop through the remining addresses in pri_packages and find the location that is shortest to the current_location
+            for i in range(0, len(self.packages_priority)):
+                if lowest_address is None:
+                    lowest_address = self.packages_priority[i]
+                    # location[] needs the string address in the brackets
+                    lowest_mileage = float(distance_graph[locations[self.current_location]][locations[package_table[int(self.packages_priority[i]) - 1]['address']]])
+                elif float(distance_graph[locations[self.current_location]][locations[package_table[int(self.packages_priority[i]) - 1]['address']]]) < lowest_mileage:
+                    lowest_address = self.packages_priority[i]
+                    # location[] needs the string address in the brackets
+                    lowest_mileage = float(distance_graph[locations[self.current_location]][locations[package_table[int(self.packages_priority[i]) - 1]['address']]])
+
+            # Add lowest_mileage to first_truck
+            self.mileage += lowest_mileage
+
+            # Calculate the time to be added to first_truck. Using a greedy algorithm to break down the addition of time
+            while lowest_mileage >= 18:
+                self.hour += 1
+                lowest_mileage -= 18
+            while lowest_mileage >= .3:
+                self.minute += 1
+                lowest_mileage -= float(.3)
+                lowest_mileage = round(lowest_mileage, 3)
+
+                if self.minute > 59:
+                    self.minute = 0
+                    self.hour += 1
+            while lowest_mileage >= .005:
+                self.sec += 1
+                lowest_mileage -= float(.005)
+                lowest_mileage = round(lowest_mileage, 3)
+
+                if self.sec > 59:
+                    self.sec = 0
+                    self.minute += 1
+
+            # Update current_location with lowest_address on first_truck
+            self.current_location = package_table[int(lowest_address) - 1]['address']
+
+            print("Package ID: ", lowest_address)
+
+            # Update delivery_status of the package that is delivered
+            package_table[int(lowest_address) - 1]['delivery_status']['delivered'] = True
+            package_table[int(lowest_address) - 1]['delivery_status']['delivered_time'] = time(self.hour, self.minute, self.sec).strftime("%I:%M:%S %p")
+
+            print(package_table[int(lowest_address) - 1])
+
+            self.packages_priority.remove(lowest_address)
+            self.total_packages += 1
+
+        print(self.mileage)
+
     def print_all(self):
         print(self.packages_priority, self.packages_standard, self.total_packages, self.hour, self.minute, self.sec, self.current_location, self.mileage)
 
@@ -96,6 +153,7 @@ class TruckRoutes:
         # Reassign distance graph and locations hash to new variables, so that we don't change the initial ones
         distance_graph = self.distance_graph
         locations = self.location_hash
+        package_table = self.package_table
 
         # Create two empty trucks
         first_truck = Truck()
@@ -134,62 +192,63 @@ class TruckRoutes:
 
         # Run first truck starting at 8:00am until the user time
         # Start delivering priority packages
-        first_priority_packages = first_truck.get_all_priority()
-        while len(first_priority_packages) > 0:
-            # lowest_address is a string number of the package id
-            lowest_address = None
-            lowest_mileage = -1
-
-            # Loop through the remining addresses in pri_packages and find the location that is shortest to the current_location
-            for i in range(0, len(first_priority_packages)):
-                if lowest_address is None:
-                    lowest_address = first_priority_packages[i]
-                    # location[] needs the string address in the brackets
-                    lowest_mileage = float(distance_graph[locations[first_truck.get_location()]][locations[self.package_table[int(first_priority_packages[i]) - 1]['address']]])
-                elif float(distance_graph[locations[first_truck.get_location()]][locations[self.package_table[int(first_priority_packages[i]) - 1]['address']]]) < lowest_mileage:
-                    lowest_address = first_priority_packages[i]
-                    # location[] needs the string address in the brackets
-                    lowest_mileage = float(distance_graph[locations[first_truck.get_location()]][locations[self.package_table[int(first_priority_packages[i]) - 1]['address']]])
-
-            # Add lowest_mileage to first_truck
-            first_truck.add_mileage(lowest_mileage)
-
-            # Calculate the time to be added to first_truck. Using a greedy algorithm to break down the addition of time
-            while lowest_mileage >= 18:
-                first_truck.add_hour(1)
-                lowest_mileage -= 18
-            while lowest_mileage >= .3:
-                first_truck.add_minute(1)
-                lowest_mileage -= float(.3)
-                lowest_mileage = round(lowest_mileage, 3)
-
-                if first_truck.get_minutes() > 59:
-                    first_truck.update_minutes(0)
-                    first_truck.add_hour(1)
-            while lowest_mileage >= .005:
-                first_truck.add_second(1)
-                lowest_mileage -= float(.005)
-                lowest_mileage = round(lowest_mileage, 3)
-
-                if first_truck.get_seconds() > 59:
-                    first_truck.update_seconds(0)
-                    first_truck.add_minute(1)
-
-            # Update current_location with lowest_address on first_truck
-            first_truck.update_location(self.package_table[int(lowest_address) - 1]['address'])
-
-            # print("Package ID: ", lowest_address)
-
-            # Update delivery_status of the package that is delivered
-            self.package_table[int(lowest_address) - 1]['delivery_status']['delivered'] = True
-            self.package_table[int(lowest_address) - 1]['delivery_status']['delivered_time'] = time(first_truck.get_hour(), first_truck.get_minutes(), first_truck.get_seconds()).strftime("%I:%M:%S %p")
-
-            # print(self.package_table[int(lowest_address) - 1])
-
-            first_priority_packages.remove(lowest_address)
-            first_truck.add_total_package_count(1)
-
-        # print(first_truck.get_mileage())
+        first_truck.deliver_priority(distance_graph, locations, package_table)
+        # first_priority_packages = first_truck.get_all_priority()
+        # while len(first_priority_packages) > 0:
+        #     # lowest_address is a string number of the package id
+        #     lowest_address = None
+        #     lowest_mileage = -1
+        #
+        #     # Loop through the remining addresses in pri_packages and find the location that is shortest to the current_location
+        #     for i in range(0, len(first_priority_packages)):
+        #         if lowest_address is None:
+        #             lowest_address = first_priority_packages[i]
+        #             # location[] needs the string address in the brackets
+        #             lowest_mileage = float(distance_graph[locations[first_truck.get_location()]][locations[self.package_table[int(first_priority_packages[i]) - 1]['address']]])
+        #         elif float(distance_graph[locations[first_truck.get_location()]][locations[self.package_table[int(first_priority_packages[i]) - 1]['address']]]) < lowest_mileage:
+        #             lowest_address = first_priority_packages[i]
+        #             # location[] needs the string address in the brackets
+        #             lowest_mileage = float(distance_graph[locations[first_truck.get_location()]][locations[self.package_table[int(first_priority_packages[i]) - 1]['address']]])
+        #
+        #     # Add lowest_mileage to first_truck
+        #     first_truck.add_mileage(lowest_mileage)
+        #
+        #     # Calculate the time to be added to first_truck. Using a greedy algorithm to break down the addition of time
+        #     while lowest_mileage >= 18:
+        #         first_truck.add_hour(1)
+        #         lowest_mileage -= 18
+        #     while lowest_mileage >= .3:
+        #         first_truck.add_minute(1)
+        #         lowest_mileage -= float(.3)
+        #         lowest_mileage = round(lowest_mileage, 3)
+        #
+        #         if first_truck.get_minutes() > 59:
+        #             first_truck.update_minutes(0)
+        #             first_truck.add_hour(1)
+        #     while lowest_mileage >= .005:
+        #         first_truck.add_second(1)
+        #         lowest_mileage -= float(.005)
+        #         lowest_mileage = round(lowest_mileage, 3)
+        #
+        #         if first_truck.get_seconds() > 59:
+        #             first_truck.update_seconds(0)
+        #             first_truck.add_minute(1)
+        #
+        #     # Update current_location with lowest_address on first_truck
+        #     first_truck.update_location(self.package_table[int(lowest_address) - 1]['address'])
+        #
+        #     # print("Package ID: ", lowest_address)
+        #
+        #     # Update delivery_status of the package that is delivered
+        #     self.package_table[int(lowest_address) - 1]['delivery_status']['delivered'] = True
+        #     self.package_table[int(lowest_address) - 1]['delivery_status']['delivered_time'] = time(first_truck.get_hour(), first_truck.get_minutes(), first_truck.get_seconds()).strftime("%I:%M:%S %p")
+        #
+        #     # print(self.package_table[int(lowest_address) - 1])
+        #
+        #     first_priority_packages.remove(lowest_address)
+        #     first_truck.add_total_package_count(1)
+        #
+        # # print(first_truck.get_mileage())
 
         # Now deliver EOD packages for first_truck
         first_standard_packages = first_truck.get_all_standard()

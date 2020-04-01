@@ -41,6 +41,8 @@ while True:
             break
         elif user_option == 2:
             print("User selected 2")
+            truck_routes = TruckRoutes(loaded_package_table, loaded_distance_graph, loaded_location_hash)
+            truck_routes.route_trucks(user_time)
             break
         elif user_option == 3:
             print("User selected 3")
