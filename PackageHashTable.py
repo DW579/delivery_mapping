@@ -29,7 +29,7 @@ class PackageHashTable:
                     obj['zip'] = row[4]
                     obj['delivery_deadline'] = row[5]
                     obj['weight'] = row[6]
-                    obj['delivery_status'] = {'delivered': False, 'delivered_time': None}
+                    obj['delivery_status'] = {'delivered': False, 'delivered_time': None, 'which_truck': None}
 
                     # Set filled object into the i-th place
                     self.table[i] = obj
@@ -38,6 +38,20 @@ class PackageHashTable:
 
         return self.table
 
+    def print_package_by_id(self, id):
+        if self.table[int(id) - 1]['delivery_status']['delivered'] is True:
+            print()
+            print("Package", self.table[int(id) - 1]['id'], "was delivered before", self.table[int(id) - 1]['delivery_deadline'], "at", self.table[int(id) - 1]['delivery_status']['delivered_time'], "by truck", self.table[int(id) - 1]['delivery_status']['which_truck'])
+        else:
+            print()
+            print("Package", self.table[int(id) - 1]['id'], "is en route to destination")
+
     # Print all the loaded packages in the hash table
     def print_all(self):
-        print(self.table)
+        print(" ID | ")
+        print("----")
+        for row in self.table:
+            if row['delivery_status']['delivered'] is True:
+                print("Package", row['id'], "was delivered before", row['delivery_deadline'], "at", row['delivery_status']['delivered_time'], "by truck", row['delivery_status']['which_truck'])
+            else:
+                print("Package", row['id'], "is en route to destination")
