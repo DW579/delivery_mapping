@@ -40,7 +40,7 @@ similar in their use but are narrowed in scope to deliver a certain sub set of p
     statement that checks if lowest_address is None. This is just to assign the first element to lowest_address and 
     lowest_mileage. After that, it will loop through and compare all the elements until it finds the lowest.
     
-    Fourth, we have now found which is the shorest distance to travel to deliver the next package. Now we calculate
+    Fourth, we have now found which is the shortest distance to travel to deliver the next package. Now we calculate
     how long it will take to get there. This will allow us to see if delivering this package will put us over the 
     time that the user has selected to be the cut off time. If delivering that package will put us over, we will break
     out of the while loop and return this function. If not then we will continue on through the function.

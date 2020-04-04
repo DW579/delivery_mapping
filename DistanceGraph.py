@@ -7,7 +7,7 @@ to find a way to find the shortest path that can be taken between any given poin
 Floyd-Warshall algorithm. This algorithm focuses on one location at a time and then compares two other locations in the
 graph by adding them together. If the addition of the two other locations is less then the current location the, it
 swaps the lowest number in. After doing this across all the locations, it builds a graph that you can know what will be
-the shorest route to another location is.
+the shortest route to another location is.
 
 Explanation of the 3 defs of this class:
 
@@ -17,7 +17,7 @@ the main array will be a row for a specific location.
 There is also a location_hash object will be used for quick look up to know an addresses column and row location.
 
 load_graph - This function will import the data from distance_data.csv. The first part of this data was provided and
-this function will fill in the second half. It will use the Floyd-Warshall algorithm to determine the shorest distance
+this function will fill in the second half. It will use the Floyd-Warshall algorithm to determine the shortest distance
 between two location points. This algorithm has a O(n^3) run time, as it has a for loop, within a for loop, within a for 
 loop After it we will then be able to use the self.graph as an array of arrays that will act as a graph with rows and 
 columns. We will then be able to use the location_hash to know which row and column a certain location can be found. 
