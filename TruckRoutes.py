@@ -1,5 +1,72 @@
 from datetime import time
 
+"""
+There are two classes, Truck and TruckRoutes. The Truck class is used to create multiple Trucks with similar functions.
+In the app we will be using two trucks, first_truck and second_truck. First_truck will be delivering more packages then
+second_truck. When first_truck is done with it's first round of delivers it will return to the hub and pick up the last
+of the packages and deliver them. TruckRoutes class will handle the delivery portion of the app.
+
+Truck class -
+__init__ - This will initialize each truck created with the basic data points that will track the progress of the truck
+    and it's packages being delivered. The descriptions of the data points are below:
+
+    self.truck_id = able to identify which truck is which
+    self.packages_priority = each truck will deliver their priority packages first. Priority packages are usually the
+        opens that need to be delivered before 9:00 or 10:30 am.
+    self.packages_standard = these are the packages that are delivered by EOD but have to be delivered by a specific
+        truck.
+    self.total_packages = this will be used to make sure that we are delivering 16 packages at a time.
+    self.hour = track the hour of day for the truck
+    self.minute = track the minute of day for the truck
+    self.sec = track the second of day for the truck
+    self.current_location = be able to know at which location the truck is to determine from what point to other point
+        we will need to look at in the distance_graph
+    self.mileage = tracking how far each truck goes
+    
+deliver_priority, deliver_standard, truck_back_to_hub, deliver_all_other_packages - All of these functions are very
+similar in their use but are narrowed in scope to deliver a certain sub set of packages. 
+
+    First, within each function there is a main while loop that runs O(n) depending on how many priority packages there
+    are. But deliver_standard and deliver_all_our_packages runs O(n) times depending on how many unique standard
+    packages a truck needs to deliver specific to it's truck and how many packages it can take from the last list of
+    packages to make up 16. These while loops can end early if it reaches the user specified time during it's delivers.
+    
+    Second, within in the while loop we set up two variables, lowest_address and lowest_mileage. These two variables
+    will hold the next shorest location the truck will need to travel to.
+    
+    Third, there is a for loop that will loop through either the priority packages or the standard packages with what
+    ever amount it can loop through for the last of the packages. Worst case it will loop O(n - 1) times because each
+    time we start again in the for loop there is one less package to chose from. Within the for loop there is an if/else 
+    statement that checks if lowest_address is None. This is just to assign the first element to lowest_address and 
+    lowest_mileage. After that, it will loop through and compare all the elements until it finds the lowest.
+    
+    Fourth, we have now found which is the shorest distance to travel to deliver the next package. Now we calculate
+    how long it will take to get there. This will allow us to see if delivering this package will put us over the 
+    time that the user has selected to be the cut off time. If delivering that package will put us over, we will break
+    out of the while loop and return this function. If not then we will continue on through the function.
+    
+    Fifth, now that we have determined that it will not take to long to deliver the next package, we will add the
+    lowest_mileage to the truck's mileage and add the time to the truck that show when a package has been delivered.
+    To calculate the time in both the fourth step and this step, I used a greedy algorithm to subtract the mileage by
+    18, then by .3, then by .005. The reason for it is:
+        
+        18 miles =  1 hour
+        .3 miles = 1 minute
+        .005 miles = 1 second
+        
+    This will allow us to incrementally increase the trucks time depending on the distance traveled.
+    
+    Sixth, now we need to update the trucks current location to be the location of the dropped off package. Also,
+    update the status of the package that is dropped off with the time it was dropped off and which truck dropped it
+    off.
+    
+    Seventh, we will then update the truck's total_package count to keep track how many packages it has delivered and
+    remove which package was deliver from it's respective list.
+    
+    Eighth, we will return the status of past_time out to main.py. In main.py we will know if we can deliver the next
+    set of packages or if we need to end the program with not all the packages delivered dependent on what the user
+    time has been selected.
+"""
 
 class Truck:
     def __init__(self):
@@ -49,6 +116,8 @@ class Truck:
     def deliver_priority(self, distance_graph, locations, package_table, user_hour, user_minute):
         past_time = False
 
+        # O(n), n being the amount of priority packages a truck needs to deliver.
+        # This while loop will break out if we reach the user specified time, so that we tell the truck to stop delivering packages.
         while len(self.packages_priority) > 0 and past_time is False:
             # lowest_address is a string number of the package id
             lowest_address = None
@@ -127,7 +196,8 @@ class Truck:
             # Update current_location with lowest_address on Truck
             self.current_location = package_table[int(lowest_address) - 1]['address']
 
-            # Update delivery_status of the package that is delivered
+            # Update delivery_status of the package that is delivered.
+            # Using the imported function time() to format the time of the truck delivered_time
             package_table[int(lowest_address) - 1]['delivery_status']['delivered'] = True
             package_table[int(lowest_address) - 1]['delivery_status']['delivered_time'] = time(self.hour, self.minute, self.sec).strftime("%I:%M:%S %p")
             package_table[int(lowest_address) - 1]['delivery_status']['which_truck'] = self.truck_id
