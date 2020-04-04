@@ -57,7 +57,7 @@ class PackageHashTable:
             status.
             """
             for row in csv_reader:
-                # If not header row
+                # If not header row in packages_data.csv file
                 if row[0] != '\ufeffid':
                     # New object created for each package and it's data
                     obj = {}
